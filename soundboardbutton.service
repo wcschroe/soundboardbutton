@@ -1,0 +1,10 @@
+
+[Unit]
+Description=Soundboard for playing random sounds with a button
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/william/GitHub/soundboard/soundboard.py
+
+[Install]
+WantedBy=multi-user.target
