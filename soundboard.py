@@ -22,7 +22,7 @@ class SoundBoardButton():
     def fill_queue(self):
         self.soundlist = []
         ready_sound:str = ''
-        working_dir:str = os.getcwd()
+        working_dir:str = os.path.dirname(__file__)
         # look for mp3 files
         for path, subdirs, files in os.walk(working_dir):
             for name in files:
@@ -35,13 +35,15 @@ class SoundBoardButton():
 
         shuffle(self.soundlist) # shuffle sounds
         for sound in self.soundlist:
-            self.soundqueue.put_nowait(sound) # enqueue sounds
+            self.soundqueue.put(sound) # enqueue sounds
 
         # play sound so we know the soundboard is ready
         self.play_sound(ready_sound)
         self.play_sound(ready_sound)
 
     def play_sound(self, sound:str):
+        print(f'playing {sound}')
+
         # get sound length
         sound_length = MP3(sound).info.length
 
@@ -65,12 +67,10 @@ class SoundBoardButton():
         # fill queue if empty
         if self.soundqueue.empty():
             self.fill_queue()
-        try:
-            # get sound and play
-            sound:str = self.soundqueue.get_nowait()
-            self.play_sound(sound)
-        except Exception as e:
-            pass
+
+        # get sound and play
+        sound:str = self.soundqueue.get()
+        self.play_sound(sound)
         
         # re-enable button presses
         GPIO.add_event_detect(channel, GPIO.RISING, callback=self.play_callback, bouncetime=2000)
