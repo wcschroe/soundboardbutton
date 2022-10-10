@@ -4,7 +4,10 @@ Description=Soundboard for playing random sounds with a button
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /home/william/GitHub/soundboard/soundboard.py
+User=william
+ExecStart=/usr/bin/python3 -u /home/william/soundboardbutton/soundboard.py
+Restart=on-failure
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
