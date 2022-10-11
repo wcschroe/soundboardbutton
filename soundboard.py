@@ -18,7 +18,7 @@ class SoundBoardButton():
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.GPIO_Pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.add_event_detect(self.GPIO_Pin, GPIO.RISING, callback=self.play_callback, bouncetime=2000)
-        # enqueue sounds 
+        # enqueue sounds
         self.fill_queue()
 
     def fill_queue(self):
@@ -47,14 +47,15 @@ class SoundBoardButton():
         print(f'playing {sound}')
 
         # setup sound
-        self.player.set_mrl(sound)
-        self.player.audio_set_volume(150)
+        sound_length = MP3(sound).info.length
+        self.player = vlc.MediaPlayer(sound)
+        self.player.audio_set_volume(100)
 
         # play sound
         self.player.play()
-        time.sleep(.1)
-        while self.player.is_playing():
-            time.sleep(.1)
+
+        # wait for sound to finish
+        time.sleep(sound_length + .5)
 
         # stop when done
         self.player.stop()
